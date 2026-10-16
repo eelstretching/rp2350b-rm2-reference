@@ -72,6 +72,29 @@ Two traps:
   the same 5-hole strip and short every GPIO to GND. Even with single-row headers, the 1.7" span
   is too wide to straddle a standard breadboard.
 
+## PSRAM in your own code
+
+With pico-sdk 2.3.0 or later, linking `hardware_psram` brings the PSRAM up at boot. It reads
+`PICO_PSRAM_CS_PIN` and `PICO_PSRAM_SIZE_BYTES`, which the board header already sets. The PSRAM then
+appears as ordinary memory at 0x11000000.
+
+- **Static data:** `__uninitialized_psram("name")` (or `__in_psram("name")` for initialised data)
+  places a variable or array in PSRAM.
+- **Dynamic allocation:** `firmware/psram_alloc` adds `psram_malloc`, `psram_calloc`,
+  `psram_realloc`, `psram_memalign` and `psram_free`, plus `psram_heap_stats()`. These work like
+  malloc (8-byte aligned, safe from both cores, not from interrupt handlers) but allocate from the
+  PSRAM left after any PSRAM variables. The SDK's own `malloc` stays in the faster on-chip SRAM.
+  It's a TLSF allocator with its control block in SRAM. To use it:
+
+  ```cmake
+  add_subdirectory(path/to/firmware/psram_alloc psram_alloc)
+  target_link_libraries(my_app psram_alloc)
+  ```
+
+PSRAM is slower than SRAM, so use it for big, mostly-streamed data (frame and pixel buffers, audio,
+network buffers). Keep stacks and hot data in SRAM. `firmware/psram_test` prints the throughput, and
+is the first thing to run on a new board to check U4.
+
 ## Files
 
 | Path | What |
@@ -83,6 +106,8 @@ Two traps:
 | `bom-jlcpcb.csv` | BOM with LCSC numbers |
 | `firmware/boards/rp2350b_rm2.h` | pico-sdk board header (CYW43 pins, 16 MB flash, 8 MB PSRAM on GPIO47) |
 | `firmware/blink/` | bring-up test: blinks D1 through the radio, so it proves the RM2 is alive |
+| `firmware/psram_test/` | bring-up test for the PSRAM: tests all 8 MB, measures throughput, exercises the heap |
+| `firmware/psram_alloc/` | `psram_malloc()` / `psram_free()`: a heap in PSRAM for your own projects (TLSF, vendored) |
 | `tools/kisch.py`, `tools/kirender.py` | netlist dump/check and rough PNG preview of a schematic, no KiCad needed |
 | `tools/rm2_footprint.py` | generator for the RM2 footprint |
 | `tools/update_pcb_from_sch.py`, `tools/layout_rm2.py` | the scripted Update PCB from Schematic and RM2/PSRAM layout pass that produced the board (run once, in KiCad's Python; kept for reference) |
@@ -173,6 +198,10 @@ GPIO47 run to J3 and a back-layer track. GPIO0's own route to J2 is unchanged.
 - The RM2 pad positions match SparkFun's independently drawn RM2 footprint (XRP Controller) at
   every pad's inner edge.
 - `firmware/blink` compiles against pico-sdk 2.3.0 with this board header.
+- `firmware/psram_test` builds against pico-sdk 2.3.0 (arm-none-eabi-gcc 13.2), with no warnings
+  from its own code under `-Wall -Wextra -Wshadow -Wconversion`. Its heap code (psram_alloc and the
+  heap part of the test) passes on a host build in 32-bit mode, so TLSF's alignment behaves as on
+  the RP2350, including under AddressSanitizer and UBSan. Not yet run on hardware.
 - Checked headless with KiCad 10.0.6 (`kicad-cli` and pcbnew's Python), using the stock global
   library tables:
   - `kicad-cli pcb drc --schematic-parity --severity-all` reports 0 unconnected items and 0
