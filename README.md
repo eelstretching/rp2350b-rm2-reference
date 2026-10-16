@@ -43,6 +43,35 @@ The cyw43 driver takes any pins from the board header, so nothing else changes i
 RP2350B a PIO block reaches either GPIO 0-31 or 16-47. The radio's PIO therefore sits in the
 16-47 window, which means LED output PIOs for GPIO 0-15 must use a different PIO block.
 
+## Using it on perfboard
+
+On each header the inner column carries the signals: every GPIO, plus 3V3 (J2 pin 2, and J5/J6),
+RUN, SWD and SWCLK. The outer column is all GND. Everything is on the 0.1" grid. The inner columns
+are 1.7" (17 holes) apart and the outer columns 1.9" (19 holes).
+
+- **Fit the inner column and only a few GND pins.** Single-row 1x28 headers on the inner columns
+  carry all 48 GPIOs, 3V3, RUN and SWD, J5/J6's 3V3 included. On the outer column, a handful of
+  GND pins is plenty: J5/J6's two, and a couple more on each side. All the outer pins are tied
+  together by the module's ground plane. Leaving the rest off frees the hole beside every signal
+  pin, so a wire can leave each one straight outward instead of threading between ground pins.
+- **Socket it and wire on the underside.** Put female headers on the perfboard and plug the module
+  in, then wire underneath with thin insulated wire (Kynar or wire-wrap). From below, the inner
+  pins are as easy to reach as any other, and the area under the module is free routing space.
+  Socketing also gives the parts on the module's underside room: U4 (the PSRAM, 1.75 mm tall
+  SOIC), R11, R13 and C22. Plain header pins pushed fully home leave only about 2.5 mm.
+- **Keep the antenna end clear.** Let the RM2 end overhang the perfboard edge, or keep that area
+  free of wires, copper and ground. Anything conductive close under the antenna detunes it.
+
+Two traps:
+
+- **Stripboard (Veroboard):** run the strips outward, perpendicular to the headers, so each GPIO
+  gets its own strip. Wherever an outer GND pin is fitted, it shares a strip with the inner pin of
+  the same row, so cut the strip between the two columns at those rows. That includes J5/J6, whose
+  rows pair 3V3 with GND: an uncut strip there shorts 3.3 V to ground.
+- **Solderless breadboard:** don't. With 2-row headers, each row's inner and outer pins land in
+  the same 5-hole strip and short every GPIO to GND. Even with single-row headers, the 1.7" span
+  is too wide to straddle a standard breadboard.
+
 ## Files
 
 | Path | What |
