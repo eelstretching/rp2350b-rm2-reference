@@ -7,10 +7,10 @@ Comment,Designator,Footprint,LCSC,Manufacturer PN,Qty,Note
 10u,C23,C_0805_2012Metric,C15850,CL21A106KAYNNNE,1,
 100n,"C24,C25",C_0402_1005Metric,C1525,CL05B104KO5NNNC,2,
 Green,D1,LED_0603_1608Metric,C72043,19-217/GHC-YR1S2/3T,1,
+B5819W,D2,D_SOD-123,C8598,B5819W SL,1,
 10103594-0001LF,J1,amphenol_10103594-0001lf,C428495,10103594-0001LF,1,
-TSW-126-07-L-D,"J2,J3",samtec_tsw-126-07-l-d,,TSW-126-07-L-D,2,Through-hole 2x26 2.54 mm header: hand-solder
-SM03B-SRSS-TB(LF)(SN),J4,jst_sm03b-srss-tb-lf--sn-,C160403,SM03B-SRSS-TB(LF)(SN),1,
-Conn_02x02,"J5,J6",PinHeader_2x02_P2.54mm_Ext,,2x02 2.54 mm pin header,2,"Through-hole header extension (3V3 + GND): hand-solder, or use one 2x28 strip across J2+J5 / J3+J6"
+Conn_01x29,J2,PinHeader_1x29_P2.54mm_Vertical,,1x29 2.54 mm pin header,1,Through-hole: hand-solder
+Conn_01x28,J3,PinHeader_1x28_P2.54mm_Vertical,,1x28 2.54 mm pin header,1,Through-hole: hand-solder
 3.3u,L1,abracon_aota-b201610s3r3-101-t,C42411119,AOTA-B201610S3R3-101-T,1,
 1k,"R2,R4,R6",generic_resc1005x35,C11702,0402WGF1001TCE,3,
 33,R3,generic_resc1005x35,C25105,0402WGF330JTCE,1,

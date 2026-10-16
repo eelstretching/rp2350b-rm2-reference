@@ -11,15 +11,20 @@ where the schematic changed underneath it:
   its pads now are get replaced by a new fan-out between the pad rows.
 - PSRAM chip select moved from GPIO0 to GPIO47, so R11's GPIO0 stub comes off and a
   GPIO47 run (back layer) goes in.
+- GPIO43-47 no longer go to J3, so Pi's runs to those pins are cut short: the radio
+  lines turn into lanes beside J3, and GPIO47 ends at the via to R11.
+- The JST debug connector J4 is gone (SWD/SWCLK are on J3), so its GND stubs come off
+  and SWD/SWCLK, which ran through its pads, run straight on to J3.
+- J3 pin 2 is VSYS, the regulator input, and USB VBUS now reaches it through a Schottky
+  (D2), so Pi's VBUS pour is split into a USB side and a VSYS side.
 
 The board is stretched 18 mm at the end away from USB, like a Pico 2 W, and the RM2
 sits between the headers there with its antenna end at the new bottom edge. The
-bottom mounting holes move to the new end, and J5/J6 extend the headers by two rows
-of 3V3 and GND. A rule
-area across the full board width keeps copper off both layers under the antenna, and
-every RM2 ground pad gets its own via to the back ground plane. The gSPI lines run
-down J3 on the top layer, in the gap between its pin columns and outside its GND
-column, where Pi has no copper.
+bottom mounting holes move to the new end. J2/J3 are single-row headers on Pi's signal
+columns, with 3V3 and GND pins at their ends. A rule area across the full board width
+keeps copper off both layers under the antenna, and every RM2 ground pad gets its own
+via to the back ground plane. The gSPI lines run down the top layer between J3 and the
+board edge, where Pi's outer GND column used to be.
 """
 import sys
 
@@ -185,14 +190,19 @@ pad = {p.GetNumber(): (round(pcbnew.ToMM(p.GetPosition().x), 3), round(pcbnew.To
 assert pad['1'] == (106.75, 153.55) and pad['9'] == (103.0, 143.25) and pad['16'] == (93.25, 146.05), pad
 
 G45, G46, G44, G43 = '/GPIO45_ADC5', '/GPIO46_ADC6', '/GPIO44_ADC4', '/GPIO43_ADC3'
-# Four lanes down J3, clear of all of Pi's copper: two in the gap between J3's pin columns
-# (WL_ON, CS) and two between the outer (GND) column and the board edge (DI, SCLK).
-CH_W, CH_E, ST_A, ST_B = 122.635, 123.085, 125.18, 125.52
-track(G46, F, (121.59, 76.54), (122.86, 77.81), (ST_B, 77.81), (ST_B, pad['3'][1]), pad['3'])
-track(G45, F, (121.59, 79.08), (122.86, 80.35), (ST_A, 80.35), (ST_A, pad['5'][1]), pad['5'])
-track(G44, F, (121.59, 81.62), (CH_E, 83.115), (CH_E, 144.4), (109.4, 144.4), (109.4, 139.0),
+# J3's top five pins (GPIO47-43 on Pi's board) are 3V3/GND now. Pi's diagonals to them stop
+# short, slip between the J3 pins, and run down four lanes between J3 and the board edge,
+# where the outer GND column used to be.
+L_WL, L_CS, L_DI, L_SCK = 122.9, 123.6, 124.3, 125.0
+for n, (x0, y0), gap_y in ((G46, (113.2, 84.93), 77.81), (G45, (114.2, 86.47), 80.35),
+                           (G44, (115.2, 88.01), 82.89), (G43, (116.2, 89.55), 85.43)):
+    remove_tracks(n, F, ((x0, y0), (121.59, gap_y - 1.27)))
+    track(n, F, (x0, y0), (120.32, gap_y))       # same 45 degree line, ending between two pins
+track(G46, F, (120.32, 77.81), (L_SCK, 77.81), (L_SCK, pad['3'][1]), pad['3'])
+track(G45, F, (120.32, 80.35), (L_DI, 80.35), (L_DI, pad['5'][1]), pad['5'])
+track(G44, F, (120.32, 82.89), (L_CS, 82.89), (L_CS, 144.4), (109.4, 144.4), (109.4, 139.0),
       (103.0, 139.0), pad['9'])
-track(G43, F, (121.59, 84.16), (CH_W, 85.205), (CH_W, 143.9), (110.2, 143.9), (110.2, 138.2),
+track(G43, F, (120.32, 85.43), (L_WL, 85.43), (L_WL, 143.9), (110.2, 143.9), (110.2, 138.2),
       (98.5, 138.2), pad['12'])
 track(G43, F, pad['12'], pad['13'])                                 # BT_ON
 # DO through R14, IRQ through R15 (one short hop under CS on the back layer)
@@ -225,28 +235,47 @@ for n, v in (('11', (100.0, 140.9)), ('7', (108.6, 144.55)), ('4', (108.6, 149.0
     track('GND', F, pad[n], v, w=0.3)
     via('GND', *v)
 
-# J5/J6 continue J2/J3 by two rows on the same 2.54 mm grid: 3V3 on the inner column
-# (like J2's 3V3 pin), GND on the outer column (like the rest of the outer rows)
-place('J5', 75.87, 140.04, 0)
-place('J6', 121.59, 140.04, 0)
-for f in ('J5', 'J6'):
-    fp(f).GetField('Reference').SetVisible(False)
-# J6's 3V3 pins sit between Pi's GPIO25 pin and the WL_ON lane: tie them together and into
-# the pour on their west side with a track rather than relying on thermal spokes alone
-track('+3V3', F, (121.59, 142.58), (121.59, 140.04), (119.6, 140.04), w=0.4)
-for p in fp('J6').Pads():
-    if p.GetNetname() == '+3V3':                     # one spoke would fit; connect them solidly
+# J2/J3 are single-row headers on Pi's inner (signal) columns; the outer GND columns are gone.
+# J2: 3V3, GPIO0-24, GND, 3V3, GND.  J3: 3V3, VSYS, GND x3, GPIO42-25 (RUN/SWD/SWCLK as before), 3V3, GND.
+place('J2', 78.41, 74.0, 0)
+place('J3', 121.59, 74.0, 0)
+# J3's 3V3 pins: the top one joins the +3V3 pour above J3; the bottom one sits between Pi's GPIO25
+# pin and the WL_ON lane, so it gets a track into the pour and a solid connection
+track('+3V3', F, (121.59, 74.0), (121.59, 71.6), w=0.4)
+track('+3V3', F, (121.59, 140.04), (119.6, 140.04), w=0.4)
+for p in fp('J3').Pads():
+    if p.GetNumber() == '27':
         p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
-for x, just in ((80.315, pcbnew.GR_TEXT_H_ALIGN_LEFT), (119.685, pcbnew.GR_TEXT_H_ALIGN_RIGHT)):
-    for y in (140.04, 142.58):                       # labels in the style of Pi's GPxx labels
-        t = pcbnew.PCB_TEXT(B)
-        t.SetText('3V3')
-        t.SetLayer(pcbnew.F_SilkS)
-        t.SetTextSize(pcbnew.VECTOR2I(MM(0.9), MM(0.9)))
-        t.SetTextThickness(MM(0.1))
-        t.SetHorizJustify(just)
-        t.SetPosition(P(x, y))
-        B.Add(t)
+
+
+def silk_label(text, x, y, just):                    # in the style of Pi's GPxx labels
+    t = pcbnew.PCB_TEXT(B)
+    t.SetText(text)
+    t.SetLayer(pcbnew.F_SilkS)
+    t.SetTextSize(pcbnew.VECTOR2I(MM(0.9), MM(0.9)))
+    t.SetTextThickness(MM(0.1))
+    t.SetHorizJustify(just)
+    t.SetPosition(P(x, y))
+    B.Add(t)
+
+
+LEFT, RIGHT = pcbnew.GR_TEXT_H_ALIGN_LEFT, pcbnew.GR_TEXT_H_ALIGN_RIGHT
+for y, text in ((140.04, 'GND'), (142.58, '3V3'), (145.12, 'GND')):
+    silk_label(text, 80.315, y, LEFT)
+for y, text in ((140.04, '3V3'), (142.58, 'GND')):
+    silk_label(text, 119.685, y, RIGHT)
+# Pi's silkscreen: J3's top labels become the power pins, ADC now ends at 42, no outer row
+relabel = {'GP47': '3V3', 'GP46': 'VSYS', 'GP45': 'GND', 'GP44': 'GND', 'GP43': 'GND'}
+for d in list(B.GetDrawings()):
+    if d.GetClass() != 'PCB_TEXT' or d.GetLayer() != pcbnew.F_SilkS:
+        continue
+    if d.GetText() in relabel:
+        d.SetText(relabel[d.GetText()])
+    elif d.GetText() == 'ADC 40-47':
+        d.SetText('ADC 40-42')
+        d.SetPosition(P(114.4, 89.24))               # centred on GP40-42 (J3 pins 6-8)
+    elif d.GetText() == 'Outer Row GND':
+        B.Delete(d)
 
 # the bottom mounting holes move to the new end, in line with the top pair (4 mm from the edge)
 place('MH3', 113.97, BOT - 4)
@@ -308,14 +337,60 @@ for t in [t for t in B.GetTracks() if t.GetNetname() == '/FLASH2_SS']:
 remove_tracks('/PSRAM_CS', BK, ((93.89, 85.3), (96.6, 85.3)))
 track('/PSRAM_CS', BK, (93.89, 85.3), (95.475, 85.295))
 
+# ---------------------------------------------------------------- J4 (debug connector) removed
+# SWD/SWCLK are on J3, so the JST debug connector is gone. Its GND stubs and vias go with it,
+# and SWD/SWCLK, which Pi ran through J4's pads, run straight on to J3.
+for a, b in (((110.9, 125.8), (110.9, 127.2)), ((110.875, 129.675), (110.9, 129.7)),
+             ((113.2, 129.675), (110.925, 129.675)), ((108.6, 129.675), (110.875, 129.675)),
+             ((110.925, 129.675), (110.9, 129.7))):
+    remove_tracks('GND', F, (a, b))
+remove_via('GND', 110.9, 127.2)
+remove_via('GND', 110.9, 129.7)
+remove_tracks('/SWD', F, ((105.1, 118.5), (111.9, 125.3)), ((111.9, 125.3), (111.9, 125.8)),
+              ((111.9, 125.8), (120.05, 125.8)))
+track('/SWD', F, (105.1, 118.5), (112.4, 125.8), (120.05, 125.8))
+remove_tracks('/SWCLK', F, ((104.3, 119.8), (109.9, 125.4)), ((109.9, 125.4), (109.9, 125.8)),
+              ((109.9, 125.8), (109.9, 127.4)), ((109.9, 127.4), (110.8, 128.3)),
+              ((110.8, 128.3), (120.01, 128.3)))
+track('/SWCLK', F, (104.3, 119.8), (112.8, 128.3), (120.01, 128.3))
+for d in list(B.GetDrawings()):
+    if d.GetClass() == 'PCB_TEXT' and d.GetText() == 'DEBUG':
+        B.Delete(d)
+
 # ---------------------------------------------------------------- R11: GPIO0 -> GPIO47
 remove_tracks('/GPIO0', BK, ((90.9, 81.0), (93.02, 81.0)), ((93.02, 81.0), (93.1, 81.08)))
-via('/GPIO47_ADC7', 112.2, 87.5)     # on Pi's GPIO47 run to J3
+# GPIO47 no longer goes to J3: Pi's run is cut back to a via that takes it to R11
+remove_tracks('/GPIO47_ADC7', F, ((112.2, 83.39), (121.59, 74.0)), ((112.2, 92.791231), (112.2, 83.39)))
+track('/GPIO47_ADC7', F, (112.2, 92.791231), (112.2, 87.5))
+via('/GPIO47_ADC7', 112.2, 87.5)
 track('/GPIO47_ADC7', BK, (112.2, 87.5), (105.815, 81.115), (93.1, 81.115))
 
 ni = B.GetNetInfo().GetNetItem('/FLASH2_SS')
 if ni is not None:
     B.Delete(ni)
+
+# ---------------------------------------------------------------- VSYS on J3 pin 2
+# J3 pin 2 is VSYS, the regulator input, so the board can run from 5 V on the header. USB VBUS
+# reaches VSYS through the Schottky D2, so header power can't back-feed the USB port. Pi's VBUS
+# pour is split in two: the USB side (J1 to D2's anode) and VSYS (D2's cathode, C1, U2's input).
+# VSYS runs from D2 through U2's input pad and on to J3 under U2, between its pins and its tab,
+# which leaves the 3V3 pour above it joined to U2's pin 2 and on to J3 pin 1.
+d2 = place('D2', 104.0, 76.55, 180)
+d2.Reference().SetPosition(P(103.0, 79.4))           # below the anode, clear of U2's pins
+d2.Reference().SetTextAngle(pcbnew.EDA_ANGLE(0, pcbnew.DEGREES_T))
+d2.Reference().SetTextSize(fp('C1').Reference().GetTextSize())
+d2.Reference().SetTextThickness(fp('C1').Reference().GetTextThickness())
+track('VBUS', F, (102.1, 76.3), (102.35, 76.55), w=0.4)
+vz = [z for z in B.Zones() if not z.GetIsRuleArea() and z.GetNetname() == 'VBUS'][0]
+zone_like('VBUS', F, F, 'VBUS', rect(101.6, 75.8, 103.8, 78.1), vz.GetAssignedPriority(), 'USB VBUS')
+vz.SetNet(net('VSYS'))
+vz.SetZoneName('VSYS')
+vz.Outline().RemoveAllContours()
+vz.Outline().NewOutline()
+for x, y in ((104.3, 74.7), (107.15, 74.7), (107.15, 77.7), (106.1, 77.7), (106.1, 81.15),
+             (101.6, 81.15), (101.6, 78.6), (104.3, 78.6)):
+    vz.Outline().Append(MM(x), MM(y))
+track('VSYS', F, (105.65, 76.55), (105.65, 82.35), (112.35, 82.35), (118.16, 76.54), (121.59, 76.54), w=0.6)
 
 pcbnew.ZONE_FILLER(B).Fill(B.Zones())
 B.Save(sys.argv[1])
