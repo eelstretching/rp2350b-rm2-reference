@@ -6,9 +6,10 @@ Run inside KiCad's Python (e.g. the kicad/kicad:10.0 Docker image):
     python3 tools/update_pcb_from_sch.py net.xml RP2350B-RM2.kicad_pcb
 
 Matches footprints by reference. Adds missing footprints, swaps footprints whose
-library ID changed (keeping position, rotation and side), copies values, fields
-and DNP / exclude-from-BOM flags from the symbols, and reassigns every pad's net.
-New footprints are parked to the right of the board for placement.
+library ID changed (keeping position, rotation and side), deletes footprints whose
+symbol is gone, copies values, fields and DNP / exclude-from-BOM flags from the
+symbols, and reassigns every pad's net. New footprints are parked to the right of
+the board for placement.
 """
 import os
 import sys
@@ -89,6 +90,14 @@ def main():
                 fld.SetText(val)
         fp.SetDNP('dnp' in props)
         fp.SetExcludedFromBOM('exclude_from_bom' in props)
+
+    # footprints whose symbol has gone from the schematic (their tracks are left for the layout pass)
+    in_sch = {c.get('ref') for c in root.find('components')}
+    for ref, fp in list(fps.items()):
+        if ref not in in_sch and fp.GetPath().AsString():
+            print(f'{ref}: removed (no symbol)')
+            board.Delete(fp)
+            del fps[ref]
 
     nets = board.GetNetInfo()
     for net in root.find('nets'):

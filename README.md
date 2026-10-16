@@ -127,8 +127,10 @@ size and dielectric. The 100n parts are 16 V instead of 25 V, which is fine on 3
 
 The board is Pi's R4 layout with **Update PCB from Schematic** applied, and the areas below added
 or changed. Every Pi footprint stays where it was apart from the bottom mounting holes (MH3, MH4)
-and the headers (J2, J3), which are now single rows on Pi's signal columns. Pi's tracks are
-untouched apart from the U4 fan-out, the R11 stub and the last stretch of GPIO43-47's runs to J3.
+and the headers (J2, J3), which are now single rows on Pi's signal columns. Pi's JST debug
+connector (J4) is gone, since SWD and SWCLK are on J3. Pi's tracks are untouched apart from the U4
+fan-out, the R11 stub, the last stretch of GPIO43-47's runs to J3, and SWD/SWCLK where they used to
+pass through J4.
 
 **RM2 end.** The board is 18 mm longer (89.5 x 52 mm), and the extra length is at the end away from
 USB, as on the Pico 2 W. The headers stay on both long edges. The RM2 (U5) sits between them,
@@ -187,6 +189,11 @@ replaced by five new vias between the pad rows: SD1/SD2 cross on top and drop be
 column, SD3/SCLK cross on top between those vias and drop beside the left column, and SD0 drops from
 U3's SD0 run and passes under U4 on the back. Pi's FLASH2_SS run from R11/R13 now carries PSRAM_CS.
 
+**J4 (debug connector) removed.** SWD and SWCLK come out on J3 (pins 22 and 23, next to RUN on
+pin 21), so Pi's JST debug connector is gone, along with its BOM line, its GND stubs and vias, and
+the "DEBUG" silkscreen. Pi ran SWD and SWCLK through J4's pads on their way to J3. They now carry on
+straight along the same 45-degree lines into their existing runs to J3.
+
 **PSRAM CS on GPIO47.** R11's old GPIO0 stub is gone. GPIO47 now reaches R11 through a via on Pi's
 GPIO47 run, which stops there instead of going on to J3, and a back-layer track. GPIO0's own route
 to J2 is unchanged.
@@ -206,7 +213,7 @@ to J2 is unchanged.
 - Checked headless with KiCad 10.0.6 (`kicad-cli` and pcbnew's Python), using the stock global
   library tables:
   - `kicad-cli pcb drc --schematic-parity --severity-all` reports 0 unconnected items and 0
-    schematic-parity issues. The only remaining violations are 46 notes that the footprint library
+    schematic-parity issues. The only remaining violations are 45 notes that the footprint library
     `RPI_COMPILED` isn't in the library table. Pi's original board has the same notes, because its
     footprints are embedded in the board.
   - `kicad-cli sch erc` reports 4 real items, in parts of the schematic this layout didn't touch: U2's

@@ -2529,312 +2529,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "RPI_DB:Connectors | Rectangular/RP-01EKJ1-8V9SV1"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "J"
-				(at -5.715 10.287 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SM03B-SRSS-TB(LF)(SN)"
-				(at -2.159 -10.414 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "RPI_COMPILED:jst_sm03b-srss-tb-lf--sn-"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" "file:///C:\\rpi-pdb\\parts\\Connectors\\Rectangular\\JST_SM03B-SRSS-TB-LF--SN-\\datasheets"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Header, JST-SH, 01x03W, Pitch=1mm, SMD, Right Angle"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "part_uid" "RP-01EKJ1-8V9SV1"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "status" "OK"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "manufacturer" "JST"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "manufacturer_pn" "SM03B-SRSS-TB(LF)(SN)"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "packaging" "380mm dia. tape & reel"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "packaging_qty" "3000"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "lcsc_pn" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "size" "5x4.95x2.95mm"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "z_height_max" "3.25mm"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "z_height_nom" "2.95mm"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "RPI_COMPILED:jst_sm03b-srss-tb-lf--sn-"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "Connectors | Rectangular/RP-01EKJ1-8V9SV1_0_1"
-				(rectangle
-					(start -1.27 6.35)
-					(end 3.556 -6.35)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Connectors | Rectangular/RP-01EKJ1-8V9SV1_1_1"
-				(rectangle
-					(start -6.35 8.89)
-					(end 6.35 -8.89)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(text "RIGHT ANGLE"
-					(at 4.953 0 900)
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 6.35 0)
-					(length 3.81)
-					(name "P1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 3.81 0)
-					(length 3.81)
-					(name "P2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 1.27 0)
-					(length 3.81)
-					(name "P3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 -3.81 0)
-					(length 3.81)
-					(name "SH1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 -6.35 0)
-					(length 3.81)
-					(name "SH2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "RPI_DB:Connectors | USB/RP-019A1P-1JAX7V"
 			(pin_names
 				(offset 0.254)
@@ -11307,17 +11001,6 @@
 		)
 		(uuid "85aa9e76-da72-43c8-a515-2df74dbb6c0a")
 	)
-	(text "JST Debug Connector"
-		(exclude_from_sim no)
-		(at 346.71 229.87 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "86bb0ca2-de6f-4c16-a6ef-06ad559cf577")
-	)
 	(text "12MHz Crystal"
 		(exclude_from_sim no)
 		(at 157.48 232.156 0)
@@ -11386,12 +11069,6 @@
 		(uuid "054bf701-dd19-4d41-8a37-5f6edcbe7dcf")
 	)
 	(junction
-		(at 358.14 247.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "066736b4-1594-4c95-9b43-786eeff2676f")
-	)
-	(junction
 		(at 247.65 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -11438,12 +11115,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2ffe8181-f2fe-4a4a-841f-297c922a1b8b")
-	)
-	(junction
-		(at 358.14 245.11)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "339310b7-79db-4e15-bb0b-a51723f94b87")
 	)
 	(junction
 		(at 97.79 73.66)
@@ -11868,16 +11539,6 @@
 			(type default)
 		)
 		(uuid "02a7e41a-361a-4e16-83a9-4453bd598d26")
-	)
-	(wire
-		(pts
-			(xy 358.14 247.65) (xy 358.14 250.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "03e9c338-ebb3-4381-bd6e-f124250fdf97")
 	)
 	(wire
 		(pts
@@ -13531,16 +13192,6 @@
 	)
 	(wire
 		(pts
-			(xy 358.14 245.11) (xy 360.68 245.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "79ac8417-99b8-4985-b16c-66422defedb5")
-	)
-	(wire
-		(pts
 			(xy 265.43 132.08) (xy 265.43 129.54)
 		)
 		(stroke
@@ -13708,16 +13359,6 @@
 			(type default)
 		)
 		(uuid "8436e743-d4ac-40c2-b190-1d166f47c279")
-	)
-	(wire
-		(pts
-			(xy 358.14 247.65) (xy 360.68 247.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "84592153-5b6c-4ef6-bd07-1d8fc14f7af1")
 	)
 	(wire
 		(pts
@@ -14141,16 +13782,6 @@
 	)
 	(wire
 		(pts
-			(xy 358.14 237.49) (xy 358.14 245.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ad22178e-b26a-4899-9c30-343ce511bef9")
-	)
-	(wire
-		(pts
 			(xy 274.32 110.49) (xy 274.32 114.3)
 		)
 		(stroke
@@ -14258,16 +13889,6 @@
 			(type default)
 		)
 		(uuid "b278caf7-c5a8-4208-bb90-93949112d3c0")
-	)
-	(wire
-		(pts
-			(xy 347.98 240.03) (xy 360.68 240.03)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b35eb97a-b8ba-4f26-b6da-eb89a2a247dc")
 	)
 	(wire
 		(pts
@@ -14478,16 +14099,6 @@
 			(type default)
 		)
 		(uuid "c0c0c2c8-b297-4b06-991a-0815ed40c8a5")
-	)
-	(wire
-		(pts
-			(xy 358.14 245.11) (xy 358.14 247.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c0c33cc0-7539-4a3f-90ab-27b75be82e04")
 	)
 	(wire
 		(pts
@@ -14961,16 +14572,6 @@
 	)
 	(wire
 		(pts
-			(xy 347.98 234.95) (xy 360.68 234.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e3b11174-9ea1-410a-9b24-b80b8083565b")
-	)
-	(wire
-		(pts
 			(xy 90.17 245.11) (xy 90.17 247.65)
 		)
 		(stroke
@@ -15048,16 +14649,6 @@
 			(type default)
 		)
 		(uuid "e8732e0c-8c05-4f09-b6ec-5c74c9447350")
-	)
-	(wire
-		(pts
-			(xy 360.68 237.49) (xy 358.14 237.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e8830896-a7c0-47b8-8e43-162da6edb09f")
 	)
 	(wire
 		(pts
@@ -16069,16 +15660,6 @@
 		)
 		(uuid "64bcd34c-61ad-4c30-b5ef-1f7a407ce5ec")
 	)
-	(label "SWCLK"
-		(at 347.98 234.95 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "65cdb4d4-2406-4457-ad38-ff3dc8f59abd")
-	)
 	(label "GPIO37"
 		(at 260.35 165.1 180)
 		(effects
@@ -16598,16 +16179,6 @@
 			(justify left bottom)
 		)
 		(uuid "dba28c50-ce38-4cf1-8bee-25c881ef1813")
-	)
-	(label "SWD"
-		(at 347.98 240.03 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "dc5661c3-5fff-492e-87a7-ec1b897d8336")
 	)
 	(label "RUN"
 		(at 241.3 246.38 0)
@@ -29595,196 +29166,6 @@
 		)
 	)
 	(symbol
-		(lib_id "RPI_DB:Connectors | Rectangular/RP-01EKJ1-8V9SV1")
-		(at 370.84 241.3 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "884ae3bc-99eb-4fdb-b3f2-64a63d4d0125")
-		(property "Reference" "J4"
-			(at 378.46 240.0299 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "SM03B-SRSS-TB(LF)(SN)"
-			(at 378.46 242.5699 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "RPI_COMPILED:jst_sm03b-srss-tb-lf--sn-"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "file:///C:\\rpi-pdb\\parts\\Connectors\\Rectangular\\JST_SM03B-SRSS-TB-LF--SN-\\datasheets"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Header, JST-SH, 01x03W, Pitch=1mm, SMD, Right Angle"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "part_uid" "RP-01EKJ1-8V9SV1"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "manufacturer" "JST"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "manufacturer_pn" "SM03B-SRSS-TB(LF)(SN)"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "packaging" "380mm dia. tape & reel"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "packaging_qty" "3000"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "size" "5x4.95x2.95mm"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "z_height_max" "3.25mm"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "z_height_nom" "2.95mm"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC" "C160403"
-			(at 370.84 241.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "320b0b04-4954-488a-932d-6b0ceaebd33a")
-		)
-		(pin "2"
-			(uuid "edf17b2e-1100-4209-bd60-83f8a53be072")
-		)
-		(pin "3"
-			(uuid "8fa2ef0b-0b56-4d03-823b-80b35ad5ed67")
-		)
-		(pin "4"
-			(uuid "f06b4a8d-0692-4752-acaf-9ea8373ce3c9")
-		)
-		(pin "5"
-			(uuid "b03ce80e-0fc8-4d06-9b7a-b65a712d4b5b")
-		)
-		(instances
-			(project "RP2350B-RM2"
-				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "J4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "RPI_DB:Resistors | Chip | M1005/RP-019A1P-4Z6ZWY")
 		(at 182.88 255.27 270)
 		(unit 1)
@@ -33257,84 +32638,6 @@
 			(project "RP2350B-RM2"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
 					(reference "X1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "RPI - Power:GND")
-		(at 358.14 250.19 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "eae63f82-1e77-41c6-b2be-c5f1f3339865")
-		(property "Reference" "#PWR022"
-			(at 358.14 256.54 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 358.14 254.127 0)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 358.14 250.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 358.14 250.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 358.14 250.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "82a34529-4ccf-41c4-b3fc-83aa7a6512ac")
-		)
-		(instances
-			(project "RP2350B-RM2"
-				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR022")
 					(unit 1)
 				)
 			)

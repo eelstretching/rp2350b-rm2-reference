@@ -11,15 +11,18 @@ where the schematic changed underneath it:
   its pads now are get replaced by a new fan-out between the pad rows.
 - PSRAM chip select moved from GPIO0 to GPIO47, so R11's GPIO0 stub comes off and a
   GPIO47 run (back layer) goes in.
+- GPIO43-47 no longer go to J3, so Pi's runs to those pins are cut short: the radio
+  lines turn into lanes beside J3, and GPIO47 ends at the via to R11.
+- The JST debug connector J4 is gone (SWD/SWCLK are on J3), so its GND stubs come off
+  and SWD/SWCLK, which ran through its pads, run straight on to J3.
 
 The board is stretched 18 mm at the end away from USB, like a Pico 2 W, and the RM2
 sits between the headers there with its antenna end at the new bottom edge. The
 bottom mounting holes move to the new end. J2/J3 are single-row headers on Pi's signal
-columns, with 3V3 and GND pins at their ends; GPIO43-47 leave the header. A rule
-area across the full board width keeps copper off both layers under the antenna, and
-every RM2 ground pad gets its own via to the back ground plane. The gSPI lines run
-down J3 on the top layer, in the gap between its pin columns and outside its GND
-column, where Pi has no copper.
+columns, with 3V3 and GND pins at their ends. A rule area across the full board width
+keeps copper off both layers under the antenna, and every RM2 ground pad gets its own
+via to the back ground plane. The gSPI lines run down the top layer between J3 and the
+board edge, where Pi's outer GND column used to be.
 """
 import sys
 
@@ -331,6 +334,26 @@ for t in [t for t in B.GetTracks() if t.GetNetname() == '/FLASH2_SS']:
     t.SetNet(net('/PSRAM_CS'))
 remove_tracks('/PSRAM_CS', BK, ((93.89, 85.3), (96.6, 85.3)))
 track('/PSRAM_CS', BK, (93.89, 85.3), (95.475, 85.295))
+
+# ---------------------------------------------------------------- J4 (debug connector) removed
+# SWD/SWCLK are on J3, so the JST debug connector is gone. Its GND stubs and vias go with it,
+# and SWD/SWCLK, which Pi ran through J4's pads, run straight on to J3.
+for a, b in (((110.9, 125.8), (110.9, 127.2)), ((110.875, 129.675), (110.9, 129.7)),
+             ((113.2, 129.675), (110.925, 129.675)), ((108.6, 129.675), (110.875, 129.675)),
+             ((110.925, 129.675), (110.9, 129.7))):
+    remove_tracks('GND', F, (a, b))
+remove_via('GND', 110.9, 127.2)
+remove_via('GND', 110.9, 129.7)
+remove_tracks('/SWD', F, ((105.1, 118.5), (111.9, 125.3)), ((111.9, 125.3), (111.9, 125.8)),
+              ((111.9, 125.8), (120.05, 125.8)))
+track('/SWD', F, (105.1, 118.5), (112.4, 125.8), (120.05, 125.8))
+remove_tracks('/SWCLK', F, ((104.3, 119.8), (109.9, 125.4)), ((109.9, 125.4), (109.9, 125.8)),
+              ((109.9, 125.8), (109.9, 127.4)), ((109.9, 127.4), (110.8, 128.3)),
+              ((110.8, 128.3), (120.01, 128.3)))
+track('/SWCLK', F, (104.3, 119.8), (112.8, 128.3), (120.01, 128.3))
+for d in list(B.GetDrawings()):
+    if d.GetClass() == 'PCB_TEXT' and d.GetText() == 'DEBUG':
+        B.Delete(d)
 
 # ---------------------------------------------------------------- R11: GPIO0 -> GPIO47
 remove_tracks('/GPIO0', BK, ((90.9, 81.0), (93.02, 81.0)), ((93.02, 81.0), (93.1, 81.08)))
