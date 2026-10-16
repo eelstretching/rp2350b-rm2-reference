@@ -15,6 +15,8 @@ where the schematic changed underneath it:
   lines turn into lanes beside J3, and GPIO47 ends at the via to R11.
 - The JST debug connector J4 is gone (SWD/SWCLK are on J3), so its GND stubs come off
   and SWD/SWCLK, which ran through its pads, run straight on to J3.
+- J3 pin 2 is VSYS, the regulator input, and USB VBUS now reaches it through a Schottky
+  (D2), so Pi's VBUS pour is split into a USB side and a VSYS side.
 
 The board is stretched 18 mm at the end away from USB, like a Pico 2 W, and the RM2
 sits between the headers there with its antenna end at the new bottom edge. The
@@ -234,12 +236,12 @@ for n, v in (('11', (100.0, 140.9)), ('7', (108.6, 144.55)), ('4', (108.6, 149.0
     via('GND', *v)
 
 # J2/J3 are single-row headers on Pi's inner (signal) columns; the outer GND columns are gone.
-# J2: 3V3, GPIO0-24, GND, 3V3, GND.  J3: 3V3, 3V3, GND x3, GPIO42-25 (RUN/SWD/SWCLK as before), 3V3, GND.
+# J2: 3V3, GPIO0-24, GND, 3V3, GND.  J3: 3V3, VSYS, GND x3, GPIO42-25 (RUN/SWD/SWCLK as before), 3V3, GND.
 place('J2', 78.41, 74.0, 0)
 place('J3', 121.59, 74.0, 0)
-# J3's 3V3 pins: the top two join the +3V3 pour above J3; the bottom one sits between Pi's GPIO25
+# J3's 3V3 pins: the top one joins the +3V3 pour above J3; the bottom one sits between Pi's GPIO25
 # pin and the WL_ON lane, so it gets a track into the pour and a solid connection
-track('+3V3', F, (121.59, 76.54), (121.59, 74.0), (121.59, 71.6), w=0.4)
+track('+3V3', F, (121.59, 74.0), (121.59, 71.6), w=0.4)
 track('+3V3', F, (121.59, 140.04), (119.6, 140.04), w=0.4)
 for p in fp('J3').Pads():
     if p.GetNumber() == '27':
@@ -263,7 +265,7 @@ for y, text in ((140.04, 'GND'), (142.58, '3V3'), (145.12, 'GND')):
 for y, text in ((140.04, '3V3'), (142.58, 'GND')):
     silk_label(text, 119.685, y, RIGHT)
 # Pi's silkscreen: J3's top labels become the power pins, ADC now ends at 42, no outer row
-relabel = {'GP47': '3V3', 'GP46': '3V3', 'GP45': 'GND', 'GP44': 'GND', 'GP43': 'GND'}
+relabel = {'GP47': '3V3', 'GP46': 'VSYS', 'GP45': 'GND', 'GP44': 'GND', 'GP43': 'GND'}
 for d in list(B.GetDrawings()):
     if d.GetClass() != 'PCB_TEXT' or d.GetLayer() != pcbnew.F_SilkS:
         continue
@@ -366,6 +368,29 @@ track('/GPIO47_ADC7', BK, (112.2, 87.5), (105.815, 81.115), (93.1, 81.115))
 ni = B.GetNetInfo().GetNetItem('/FLASH2_SS')
 if ni is not None:
     B.Delete(ni)
+
+# ---------------------------------------------------------------- VSYS on J3 pin 2
+# J3 pin 2 is VSYS, the regulator input, so the board can run from 5 V on the header. USB VBUS
+# reaches VSYS through the Schottky D2, so header power can't back-feed the USB port. Pi's VBUS
+# pour is split in two: the USB side (J1 to D2's anode) and VSYS (D2's cathode, C1, U2's input).
+# VSYS runs from D2 through U2's input pad and on to J3 under U2, between its pins and its tab,
+# which leaves the 3V3 pour above it joined to U2's pin 2 and on to J3 pin 1.
+d2 = place('D2', 104.0, 76.55, 180)
+d2.Reference().SetPosition(P(103.0, 79.4))           # below the anode, clear of U2's pins
+d2.Reference().SetTextAngle(pcbnew.EDA_ANGLE(0, pcbnew.DEGREES_T))
+d2.Reference().SetTextSize(fp('C1').Reference().GetTextSize())
+d2.Reference().SetTextThickness(fp('C1').Reference().GetTextThickness())
+track('VBUS', F, (102.1, 76.3), (102.35, 76.55), w=0.4)
+vz = [z for z in B.Zones() if not z.GetIsRuleArea() and z.GetNetname() == 'VBUS'][0]
+zone_like('VBUS', F, F, 'VBUS', rect(101.6, 75.8, 103.8, 78.1), vz.GetAssignedPriority(), 'USB VBUS')
+vz.SetNet(net('VSYS'))
+vz.SetZoneName('VSYS')
+vz.Outline().RemoveAllContours()
+vz.Outline().NewOutline()
+for x, y in ((104.3, 74.7), (107.15, 74.7), (107.15, 77.7), (106.1, 77.7), (106.1, 81.15),
+             (101.6, 81.15), (101.6, 78.6), (104.3, 78.6)):
+    vz.Outline().Append(MM(x), MM(y))
+track('VSYS', F, (105.65, 76.55), (105.65, 82.35), (112.35, 82.35), (118.16, 76.54), (121.59, 76.54), w=0.6)
 
 pcbnew.ZONE_FILLER(B).Fill(B.Zones())
 B.Save(sys.argv[1])

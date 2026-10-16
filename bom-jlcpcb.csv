@@ -7,6 +7,7 @@ Comment,Designator,Footprint,LCSC,Manufacturer PN,Qty,Note
 10u,C23,C_0805_2012Metric,C15850,CL21A106KAYNNNE,1,
 100n,"C24,C25",C_0402_1005Metric,C1525,CL05B104KO5NNNC,2,
 Green,D1,LED_0603_1608Metric,C72043,19-217/GHC-YR1S2/3T,1,
+B5819W,D2,D_SOD-123,C8598,B5819W SL,1,
 10103594-0001LF,J1,amphenol_10103594-0001lf,C428495,10103594-0001LF,1,
 Conn_01x29,J2,PinHeader_1x29_P2.54mm_Vertical,,1x29 2.54 mm pin header,1,Through-hole: hand-solder
 Conn_01x28,J3,PinHeader_1x28_P2.54mm_Vertical,,1x28 2.54 mm pin header,1,Through-hole: hand-solder

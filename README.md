@@ -1,12 +1,14 @@
 # RP2350B + RM2
 
-Raspberry Pi's RP2350B minimal design (RPI-RP2350B-MINIMAL R4-S1, KiCad 10) with three additions:
+Raspberry Pi's RP2350B minimal design (RPI-RP2350B-MINIMAL R4-S1, KiCad 10) with these additions:
 
 - the **RM2** Wi-Fi/Bluetooth module (CYW43439) on **GPIO 43-46**
 - the **8 MB APS6404L PSRAM** fitted on the second QSPI chip select, moved from GPIO0 to **GPIO47**
 - **single-row headers**: J2/J3 are 1x29 / 1x28 rows with the GPIOs in order and **3V3 and GND
   pins at both ends**, in place of Pi's 2x26 headers with an all-GND outer row. That makes the
   board easy to use on perfboard, with 3.3 V on hand for level shifters and the like
+- a **5 V input (VSYS) on J3 pin 2**, so the board can run without USB. As on a Pico, USB comes in
+  through a Schottky diode (D2), so 5 V on the header can't back-feed a computer's USB port
 
 That leaves **GPIO 0-42 free and in order** on the J2/J3 headers, instead of the Pico 2 W's gap
 at 23/24/25/29.
@@ -34,7 +36,7 @@ The headers, from the USB end down:
 | Header | Top | Middle | Bottom |
 |---|---|---|---|
 | J2 (left, 29 pins) | 3V3 | GP0-GP24 | GND, 3V3, GND |
-| J3 (right, 28 pins) | 3V3, 3V3, GND, GND, GND | GP42-GP28, RUN, SWD, SWCLK, GP27-GP25 | 3V3, GND |
+| J3 (right, 28 pins) | 3V3, VSYS, GND, GND, GND | GP42-GP28, RUN, SWD, SWCLK, GP27-GP25 | 3V3, GND |
 
 The radio circuit is the Pico 2 W's (and the RM2 datasheet's) on different pins:
 
@@ -45,6 +47,24 @@ The radio circuit is the Pico 2 W's (and the RM2 datasheet's) on different pins:
 The cyw43 driver takes any pins from the board header, so nothing else changes in firmware. On the
 RP2350B a PIO block reaches either GPIO 0-31 or 16-47. The radio's PIO therefore sits in the
 16-47 window, which means LED output PIOs for GPIO 0-15 must use a different PIO block.
+
+## Power
+
+The board runs from USB, or from 5 V on **J3 pin 2 (VSYS)**, which works like a Pico's VSYS pin.
+
+- VSYS feeds U2, the 3.3 V regulator (NCP1117, linear). USB's VBUS reaches VSYS through D2
+  (B5819W Schottky). D2 blocks 5 V on the header from flowing back into a computer, so you can leave
+  USB plugged in for flashing and serial while the header powers the board. With both connected,
+  the header supply (no diode drop) carries the load.
+- Give VSYS 4.75-5.5 V. U2 needs about 1.2 V of headroom, and anything above 3.3 V plus that
+  headroom turns into heat in U2.
+- **From a 12 V supply** (the lights' supply, say), step it down to 5 V with a small buck module
+  and wire that to VSYS and GND. Don't put 12 V on VSYS directly: U2 would burn (12 - 3.3) V times
+  the board's current, nearly 1 W at 100 mA, which is too much for a SOT-223 on this copper.
+- On USB alone, D2 drops about 0.3-0.4 V, which leaves U2 enough headroom from a normal USB port.
+- The 3V3 pins are U2's output. They're fine for level shifters and sensors (tens of mA). U2 also
+  carries the RP2350 and the radio, and it turns (VSYS - 3.3 V) times the total current into heat.
+- VSYS has no reverse-polarity protection, so check the polarity before powering up.
 
 ## Using it on perfboard
 
@@ -128,9 +148,9 @@ size and dielectric. The 100n parts are 16 V instead of 25 V, which is fine on 3
 The board is Pi's R4 layout with **Update PCB from Schematic** applied, and the areas below added
 or changed. Every Pi footprint stays where it was apart from the bottom mounting holes (MH3, MH4)
 and the headers (J2, J3), which are now single rows on Pi's signal columns. Pi's JST debug
-connector (J4) is gone, since SWD and SWCLK are on J3. Pi's tracks are untouched apart from the U4
-fan-out, the R11 stub, the last stretch of GPIO43-47's runs to J3, and SWD/SWCLK where they used to
-pass through J4.
+connector (J4) is gone, since SWD and SWCLK are on J3. D2 is new, next to the USB connector. Pi's
+tracks are untouched apart from the U4 fan-out, the R11 stub, the last stretch of GPIO43-47's runs
+to J3, and SWD/SWCLK where they used to pass through J4. Pi's VBUS pour is split in two around D2.
 
 **RM2 end.** The board is 18 mm longer (89.5 x 52 mm), and the extra length is at the end away from
 USB, as on the Pico 2 W. The headers stay on both long edges. The RM2 (U5) sits between them,
@@ -175,13 +195,22 @@ NPTH holes with no copper.
 inner (signal) columns, so every GPIO keeps its pad and Pi's routing to it. The outer GND column is
 gone, and the top-layer +3V3 pour and the back GND plane fill its place.
 - GND pins connect to the back plane.
-- J3's top two 3V3 pins join the pour by U2 with a track, about 2 mOhm from U2's output.
+- J3's top 3V3 pin joins the pour above J3, which U2's pin 2 feeds directly, about 3 mOhm from
+  U2's output.
+- J3 pin 2 is VSYS (see "VSYS on J3" below).
 - J3's bottom 3V3 pin sits between GPIO25's pin and the WL_ON lane, so it gets a track into the
   pour and a solid (not thermal) connection.
 - J2's 3V3 pins take the pour around them, 9-17 mOhm from U2.
 
-Pi's silkscreen labels for J3's top five pins now read 3V3 and GND, "ADC 40-47" reads "ADC 40-42",
+Pi's silkscreen labels for J3's top five pins now read 3V3, VSYS and GND, "ADC 40-47" reads "ADC 40-42",
 and the "Outer Row GND" notes are gone. The new bottom pins get labels in the same style.
+
+**VSYS on J3.** D2 (SOD-123) sits between the USB connector, C1 and U2, in what was Pi's VBUS
+pour. That pour is split in two. A small USB-side piece runs from J1's VBUS pin to D2's anode, and
+the rest is VSYS: D2's cathode, C1 and U2's input. A 0.6 mm VSYS track runs from D2's cathode
+straight through U2's input pad, under U2 between its pins and its tab, and diagonally up to J3
+pin 2. Going under U2 rather than past C1 keeps the 3V3 pour above it (around the top mounting
+hole and J3 pin 1) joined to U2's pin 2. The back GND plane is unbroken under the whole route.
 
 **U4 (PSRAM).** U4 swaps to `Package_SO:SOIC-8_3.9x4.9mm_P1.27mm` at Pi's spot on the back, under
 U3. Pi's back-side fan-out vias for the second flash sat where the 150 mil pads now are. They are
