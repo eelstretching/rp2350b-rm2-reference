@@ -13,7 +13,9 @@ where the schematic changed underneath it:
   GPIO47 run (back layer) goes in.
 
 The board is stretched 18 mm at the end away from USB, like a Pico 2 W, and the RM2
-sits between the headers there with its antenna end at the new bottom edge. A rule
+sits between the headers there with its antenna end at the new bottom edge. The
+bottom mounting holes move to the new end, and J5/J6 extend the headers by two rows
+of 3V3 and GND. A rule
 area across the full board width keeps copper off both layers under the antenna, and
 every RM2 ground pad gets its own via to the back ground plane. The gSPI lines run
 down J3 on the top layer, in the gap between its pin columns and outside its GND
@@ -87,10 +89,11 @@ def remove_via(netname, x, y):
     B.Delete(hit[0])
 
 
-def place(ref, x, y, rot, layer=F):
+def place(ref, x, y, rot=None):
     f = fp(ref)
     f.SetPosition(P(x, y))
-    f.SetOrientationDegrees(rot)
+    if rot is not None:
+        f.SetOrientationDegrees(rot)
     return f
 
 
@@ -187,18 +190,18 @@ G45, G46, G44, G43 = '/GPIO45_ADC5', '/GPIO46_ADC6', '/GPIO44_ADC4', '/GPIO43_AD
 CH_W, CH_E, ST_A, ST_B = 122.635, 123.085, 125.18, 125.52
 track(G46, F, (121.59, 76.54), (122.86, 77.81), (ST_B, 77.81), (ST_B, pad['3'][1]), pad['3'])
 track(G45, F, (121.59, 79.08), (122.86, 80.35), (ST_A, 80.35), (ST_A, pad['5'][1]), pad['5'])
-track(G44, F, (121.59, 81.62), (CH_E, 83.115), (CH_E, 141.4), (109.4, 141.4), (109.4, 139.0),
+track(G44, F, (121.59, 81.62), (CH_E, 83.115), (CH_E, 144.4), (109.4, 144.4), (109.4, 139.0),
       (103.0, 139.0), pad['9'])
-track(G43, F, (121.59, 84.16), (CH_W, 85.205), (CH_W, 140.9), (110.2, 140.9), (110.2, 138.2),
+track(G43, F, (121.59, 84.16), (CH_W, 85.205), (CH_W, 143.9), (110.2, 143.9), (110.2, 138.2),
       (98.5, 138.2), pad['12'])
 track(G43, F, pad['12'], pad['13'])                                 # BT_ON
 # DO through R14, IRQ through R15 (one short hop under CS on the back layer)
 track(G45, F, (109.81, 146.05), (109.81, 147.55))                   # R14.1
 track('Net-(U5-DO)', F, (108.79, 146.05), pad['6'])
 track(G45, F, (112.0, 146.91), (112.0, 147.55))                     # R15.1
-track('Net-(U5-~{IRQ})', F, (112.0, 145.89), (112.0, 144.8))
-via('Net-(U5-~{IRQ})', 112.0, 144.8)
-track('Net-(U5-~{IRQ})', BK, (112.0, 144.8), (108.2, 141.0), (101.5, 141.0))
+track('Net-(U5-~{IRQ})', F, (112.0, 145.89), (113.0, 145.89))
+via('Net-(U5-~{IRQ})', 113.0, 145.89)
+track('Net-(U5-~{IRQ})', BK, (113.0, 145.89), (108.11, 141.0), (101.5, 141.0))
 via('Net-(U5-~{IRQ})', 101.5, 141.0)
 track('Net-(U5-~{IRQ})', F, (101.5, 141.0), pad['10'])
 # LED: pad 8 -> R16 -> D1 -> GND
@@ -222,6 +225,33 @@ for n, v in (('11', (100.0, 140.9)), ('7', (108.6, 144.55)), ('4', (108.6, 149.0
     track('GND', F, pad[n], v, w=0.3)
     via('GND', *v)
 
+# J5/J6 continue J2/J3 by two rows on the same 2.54 mm grid: 3V3 on the inner column
+# (like J2's 3V3 pin), GND on the outer column (like the rest of the outer rows)
+place('J5', 75.87, 140.04, 0)
+place('J6', 121.59, 140.04, 0)
+for f in ('J5', 'J6'):
+    fp(f).GetField('Reference').SetVisible(False)
+# J6's 3V3 pins sit between Pi's GPIO25 pin and the WL_ON lane: tie them together and into
+# the pour on their west side with a track rather than relying on thermal spokes alone
+track('+3V3', F, (121.59, 142.58), (121.59, 140.04), (119.6, 140.04), w=0.4)
+for p in fp('J6').Pads():
+    if p.GetNetname() == '+3V3':                     # one spoke would fit; connect them solidly
+        p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
+for x, just in ((80.315, pcbnew.GR_TEXT_H_ALIGN_LEFT), (119.685, pcbnew.GR_TEXT_H_ALIGN_RIGHT)):
+    for y in (140.04, 142.58):                       # labels in the style of Pi's GPxx labels
+        t = pcbnew.PCB_TEXT(B)
+        t.SetText('3V3')
+        t.SetLayer(pcbnew.F_SilkS)
+        t.SetTextSize(pcbnew.VECTOR2I(MM(0.9), MM(0.9)))
+        t.SetTextThickness(MM(0.1))
+        t.SetHorizJustify(just)
+        t.SetPosition(P(x, y))
+        B.Add(t)
+
+# the bottom mounting holes move to the new end, in line with the top pair (4 mm from the edge)
+place('MH3', 113.97, BOT - 4)
+place('MH4', 86.03, BOT - 4)
+
 # zones for the stretched end: back GND plane, +3V3 on top, GND on top under the module
 ANT = CY + 3.3                       # module's antenna line
 zone_like('GND', BK, BK, 'GND', rect(73.5, 140.0, 126.5, BOT + 0.5), 11, 'RM2 end GND')
@@ -235,7 +265,7 @@ ka.SetIsRuleArea(True)
 ka.SetLayerSet(pcbnew.LSET.AllCuMask())
 ka.SetDoNotAllowTracks(True)
 ka.SetDoNotAllowVias(True)
-ka.SetDoNotAllowPads(True)
+ka.SetDoNotAllowPads(False)          # the NPTH mounting holes sit here
 ka.SetDoNotAllowZoneFills(True)
 ka.SetDoNotAllowFootprints(False)
 ka.SetZoneName('RM2 antenna strip: no copper')
