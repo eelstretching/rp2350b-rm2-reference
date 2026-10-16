@@ -11073,6 +11073,222 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Connector_Generic:Conn_02x02_Odd_Even"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "J"
+				(at 1.27 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_02x02_Odd_Even"
+				(at 1.27 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_2x??_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Conn_02x02_Odd_Even_1_1"
+				(rectangle
+					(start -1.27 1.27)
+					(end 3.81 -3.81)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 3.81 0.127)
+					(end 2.54 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 3.81 -2.413)
+					(end 2.54 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 0 180)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "Pin_3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 -2.54 180)
+					(length 3.81)
+					(name "Pin_4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(text "8 MB PSRAM (U4) on the second QSPI chip select (XIP_SS_N[1]), moved from GPIO0 to GPIO47.\nR13 pull-up keeps it deselected at power-up (GPIOs default to pull-downs). Fit R11 = 0R."
 		(exclude_from_sim no)
@@ -11238,6 +11454,17 @@
 			(justify left bottom)
 		)
 		(uuid "d78c6c12-b06e-44e0-94af-2f034e4f9361")
+	)
+	(text "J5/J6 continue J2/J3:\n3V3 inner pins, GND outer."
+		(exclude_from_sim no)
+		(at 345.44 215.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "eb415729-2f42-48e4-867c-3a9714808f3d")
 	)
 	(junction
 		(at 165.1 240.03)
@@ -11940,6 +12167,30 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "fe5ddf37-0774-4dd3-bcfe-ebb510a4a6e0")
+	)
+	(junction
+		(at 323.85 212.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d0ceeb2f-41a5-446d-90d2-7b2eafd6f0bd")
+	)
+	(junction
+		(at 341.63 209.55)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "155d48f3-9bff-4138-9c6f-21e8ae11537d")
+	)
+	(junction
+		(at 381 209.55)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1dfe8729-1abf-4b09-8fce-6d3887e3071a")
+	)
+	(junction
+		(at 398.78 212.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6e10ca7c-3922-46d5-9255-d3daecd5f9bd")
 	)
 	(no_connect
 		(at 74.93 96.52)
@@ -16634,6 +16885,166 @@
 			(type default)
 		)
 		(uuid "ffee6eac-f298-4dff-bf1d-261a08e64ce9")
+	)
+	(wire
+		(pts
+			(xy 326.39 209.55) (xy 323.85 209.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9fd58b2c-1a1e-4a62-812c-54a805cb3ed4")
+	)
+	(wire
+		(pts
+			(xy 326.39 212.09) (xy 323.85 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0679eaa3-67bb-4b56-a730-685fa17c8fba")
+	)
+	(wire
+		(pts
+			(xy 323.85 209.55) (xy 323.85 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f0e7a19a-cdba-45d1-8eab-c3200b83f6ec")
+	)
+	(wire
+		(pts
+			(xy 323.85 212.09) (xy 323.85 214.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dca264b6-6aef-413b-bc5c-81f0131e2e88")
+	)
+	(wire
+		(pts
+			(xy 339.09 209.55) (xy 341.63 209.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68ff0601-9c2a-4c80-8261-ee4a259e3b81")
+	)
+	(wire
+		(pts
+			(xy 339.09 212.09) (xy 341.63 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bff26b1f-69bf-4c83-8cd5-7bba5a909355")
+	)
+	(wire
+		(pts
+			(xy 341.63 209.55) (xy 341.63 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b46ef543-fa76-42f1-9efb-3cbda9e8ae6a")
+	)
+	(wire
+		(pts
+			(xy 341.63 207.01) (xy 341.63 209.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e17f5796-350b-4337-861b-9a7797d44b14")
+	)
+	(wire
+		(pts
+			(xy 383.54 209.55) (xy 381 209.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de05ada8-0b04-4ee1-bfd5-25a90387622c")
+	)
+	(wire
+		(pts
+			(xy 383.54 212.09) (xy 381 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "01de2115-0d18-48f4-a106-6a010a7b42fb")
+	)
+	(wire
+		(pts
+			(xy 381 209.55) (xy 381 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d94cbb16-e1ff-49ed-9ad6-b22630f685ee")
+	)
+	(wire
+		(pts
+			(xy 381 207.01) (xy 381 209.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5ef359d0-ce28-4f55-93cc-5bf5fa09218d")
+	)
+	(wire
+		(pts
+			(xy 396.24 209.55) (xy 398.78 209.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c660fac5-80a7-440e-a368-b2d27e9506c0")
+	)
+	(wire
+		(pts
+			(xy 396.24 212.09) (xy 398.78 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c825a15-32ca-4ddc-bdab-3132cd01a7a6")
+	)
+	(wire
+		(pts
+			(xy 398.78 209.55) (xy 398.78 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "093078a7-6efe-4c34-a30e-110339a8acf5")
+	)
+	(wire
+		(pts
+			(xy 398.78 212.09) (xy 398.78 214.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "075a3a1e-adf2-42b0-9679-3f03da492de3")
 	)
 	(label "GPIO44_ADC4"
 		(at 368.3 128.27 0)
@@ -36045,6 +36456,550 @@
 			(project "RP2350B-RM2"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
 					(reference "#PWR16")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_02x02_Odd_Even")
+		(at 331.47 209.55 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "3672b676-1b9c-40f6-9eb0-8a58dc45e7a3")
+		(property "Reference" "J5"
+			(at 332.74 207.01 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_02x02"
+			(at 332.74 214.63 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "rp2350b_rm2:PinHeader_2x02_P2.54mm_Ext"
+			(at 331.47 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 331.47 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Header extension below J2: two 3V3 pins (inner column) and two GND (outer column)"
+			(at 331.47 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "manufacturer" "Generic"
+			(at 331.47 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "manufacturer_pn" "2x02 2.54 mm pin header"
+			(at 331.47 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" ""
+			(at 331.47 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "2439a59f-1b3a-4a77-867f-daab95523594")
+		)
+		(pin "2"
+			(uuid "8cbc4333-9bf5-4006-a1ed-4df7e09276df")
+		)
+		(pin "3"
+			(uuid "f9312a1f-2db7-4b0f-b6c4-a55bf5b53c7d")
+		)
+		(pin "4"
+			(uuid "5d45e87c-fb60-4d2a-8fd9-52d5ac47cdee")
+		)
+		(instances
+			(project "RP2350B-RM2"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "J5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_02x02_Odd_Even")
+		(at 388.62 209.55 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "6af918ca-d12b-49b1-aa94-272f8cd674e3")
+		(property "Reference" "J6"
+			(at 389.89 207.01 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_02x02"
+			(at 389.89 214.63 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "rp2350b_rm2:PinHeader_2x02_P2.54mm_Ext"
+			(at 388.62 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 388.62 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Header extension below J3: two 3V3 pins (inner column) and two GND (outer column)"
+			(at 388.62 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "manufacturer" "Generic"
+			(at 388.62 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "manufacturer_pn" "2x02 2.54 mm pin header"
+			(at 388.62 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" ""
+			(at 388.62 209.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "97d03296-539f-4daf-beed-b039f8d28bec")
+		)
+		(pin "2"
+			(uuid "40eca151-f03a-4310-b122-3988356abf61")
+		)
+		(pin "3"
+			(uuid "7ab93b30-6cbc-4178-9f4a-417e174c5c7f")
+		)
+		(pin "4"
+			(uuid "26cfe57d-607d-40ae-a25d-1c458e4e3a69")
+		)
+		(instances
+			(project "RP2350B-RM2"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "J6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RPI - Power:GND")
+		(at 323.85 214.63 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "2cb85bb7-09e8-488a-89d1-7a71ed3a314f")
+		(property "Reference" "#PWR050"
+			(at 323.85 220.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 323.85 218.567 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 323.85 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 323.85 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 323.85 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c42332ce-b511-4354-bb3e-31e5a01d6f35")
+		)
+		(instances
+			(project "RP2350B-RM2"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "#PWR050")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RPI - Power:PWR_NET")
+		(at 341.63 207.01 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "b0357fae-71ac-40b5-98bb-f9db9b713935")
+		(property "Reference" "#PWR051"
+			(at 341.63 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 341.63 203.2 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 341.63 207.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 341.63 207.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 341.63 207.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a54c6f0f-e750-44ae-92d2-92c9694adede")
+		)
+		(instances
+			(project "RP2350B-RM2"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "#PWR051")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RPI - Power:PWR_NET")
+		(at 381 207.01 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "b3caec67-73a5-4175-aaf3-bc8fb475178a")
+		(property "Reference" "#PWR052"
+			(at 381 210.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 381 203.2 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 381 207.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 381 207.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 381 207.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b165cc1a-1244-4817-a025-b78a5fabb31b")
+		)
+		(instances
+			(project "RP2350B-RM2"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "#PWR052")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RPI - Power:GND")
+		(at 398.78 214.63 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "61fa435b-8edf-4e5d-bc97-fd8f049dbb4e")
+		(property "Reference" "#PWR053"
+			(at 398.78 220.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 398.78 218.567 0)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 398.78 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 398.78 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 398.78 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ab9bed62-6308-43e8-b2a9-1cef5eb77947")
+		)
+		(instances
+			(project "RP2350B-RM2"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "#PWR053")
 					(unit 1)
 				)
 			)
