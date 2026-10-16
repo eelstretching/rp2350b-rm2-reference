@@ -42,7 +42,7 @@ RP2350B a PIO block reaches either GPIO 0-31 or 16-47. The radio's PIO therefore
 | Path | What |
 |---|---|
 | `RP2350B-RM2.kicad_sch` | schematic (single sheet, A3) |
-| `RP2350B-RM2.kicad_pcb` | Pi's R4 layout plus the RM2 tab and the PSRAM (see "Layout") |
+| `RP2350B-RM2.kicad_pcb` | Pi's R4 layout, 18 mm longer, plus the RM2 and the PSRAM (see "Layout") |
 | `rp2350b_rm2.kicad_sym`, `rp2350b_rm2.pretty/RPi_RM2.kicad_mod` | RM2 symbol and footprint (project libraries, already in `sym-lib-table` / `fp-lib-table`) |
 | `bom-jlcpcb.csv` | BOM with LCSC numbers |
 | `firmware/boards/rp2350b_rm2.h` | pico-sdk board header (CYW43 pins, 16 MB flash, 8 MB PSRAM on GPIO47) |
@@ -72,33 +72,38 @@ The board is Pi's R4 layout with **Update PCB from Schematic** applied, and thre
 changed. Every Pi footprint stays where it was. Pi's tracks are untouched apart from the U4 fan-out and the R11 stub
 described below.
 
-**RM2 tab.** The outline grows by a 22.5 x 27.5 mm tab on the right edge, level with J3's top. The RM2
-(U5) sits in the tab with its antenna end (pins 1 and 21) toward the tab's right edge. The radio
-pins face J3's GPIO43-46. The board is 74.5 mm wide across the tab and keeps its 52 mm width below it.
+**RM2 end.** The board is 18 mm longer (89.5 x 52 mm), and the extra length is at the end away from
+USB, as on the Pico 2 W. The headers stay on both long edges. The RM2 (U5) sits between them,
+centred, with its antenna end (pins 1 and 21) at the new bottom edge. The module's top edge clears
+Pi's "Minimal Design Example R4" silkscreen line.
 
-- Antenna: a rule area across the whole antenna end of the tab, from the module's antenna line to the
-  board edge, blocks copper, tracks and vias on both layers. That covers the footprint's own keep-out
-  plus the copper around it.
-- Ground: there's a solid back-layer GND pour under the module and a top-layer GND pour under the module
-  body. Each of the six RM2 GND pads (1, 4, 7, 11, 15, 21) has its own via to the back plane, at most
-  2 mm from the pad. J3's outer column (all GND) runs next to the tab and stitches the tab's plane to
-  the main one.
-- gSPI: GPIO43-46 leave J3's inner pins between the outer GND pins and run straight to the module, on
-  top copper. Past J3, CS and WL_ON run about 12 mm. SCLK and DI run about 27 mm, because those
-  pins are on the module's top side and their tracks go over it. From U1 the total is 38 mm (CS,
-  WL_ON) and 55-57 mm (DI, SCLK), of which about 30 mm is Pi's existing U1-to-J3 routing. That's
-  electrically short at cyw43's default gSPI clock (tens of MHz). Turning the antenna toward the top
-  edge instead would shorten them, but would put the antenna about 2 mm from J3's metal pins.
-  R14 (DO, 470R) sits 1.1 mm from the DO pad, and R15 (IRQ, 10k) sits next to the GPIO45 split.
-  The IRQ line drops to the back layer for 4.7 mm to pass under CS. It's the only radio signal
-  off the top layer.
-- Power: VDDIO and VIN are tied by a 0.4 mm track, with C25 at VDDIO and C24/C23 at VIN. 3V3 comes
-  from Pi's +3V3 pour strip that runs down the outside of J3. That strip is about 3 mm wide and is
-  fed by Pi's wide 3V3 track at GP34.
-- D1 (WL_GPIO0 LED) and R16 sit beside the module.
+- Antenna: a rule area across the full board width, from the module's antenna line to the bottom
+  edge, blocks copper, tracks and vias on both layers. That covers the footprint's own keep-out plus
+  the copper on either side of it.
+- Ground: there's a solid back-layer GND pour under the module and a top-layer GND pour under the
+  module body. Each of the six RM2 GND pads (1, 4, 7, 11, 15, 21) has its own via to the back plane,
+  within 2.4 mm of the pad centre.
+- gSPI: GPIO43-46 run on top copper the whole way. They use J3, where Pi has no copper: WL_ON and CS
+  run in the gap between J3's two pin columns, and DI and SCLK between the outer (all-GND) column and
+  the board edge. All four use Pi's 0.15 mm track and clearance. Below J3 they turn in under MH3's
+  keep-out. SCLK, DI and DO land on the module's right side, and CS and WL_ON wrap over its top.
+- Length: the cost of the long-board layout is length. Each gSPI net runs 114-126 mm from U1
+  (Pico 2 W: a few cm), about 30 mm of which is Pi's existing U1-to-J3 routing. That's still short
+  next to a clock period at cyw43's default gSPI rate. But it's around the length where fast GPIO
+  edges start to ring, and SCLK has no series resistor. If the radio misbehaves at bring-up, slow
+  the bus with a higher `CYW43_PIO_CLOCK_DIV_INT` before suspecting anything else.
+- R14 (DO, 470R) sits 1 mm from the DO pad, and R15 (IRQ, 10k) sits next to it on GPIO45. The IRQ
+  line (host wake) takes the back layer for 12 mm to get from R15 to its pad under CS. It's the
+  only radio signal off the top layer.
+- Power: VIN has C24 (100n) and C23 (10u) next to it, and VDDIO has C25 (100n). Both sit in the
+  top-layer +3V3 pour, which joins Pi's pour above the module. A sheet-resistance estimate of that
+  copper puts U2's output to the RM2's VIN at about 19 mOhm, roughly 6 mV at a 300 mA transmit
+  peak.
+- D1 (WL_GPIO0 LED) and R16 sit just above the module's top-right corner.
 
-GPIO43-47 stay wired to J3's pins 1-9 as in the schematic. The radio traces pass through those header
-pins, so leave them unloaded when the radio is fitted, as noted above.
+GPIO43-47 stay wired to J3's pins 1-9 as in the schematic. Leave those header pins unloaded when the
+radio is fitted, as noted above. The gSPI lanes also run alongside the rest of J3's pins, so
+expect a little crosstalk from SCLK onto anything wired to J3.
 
 **U4 (PSRAM).** U4 swaps to `Package_SO:SOIC-8_3.9x4.9mm_P1.27mm` at Pi's spot on the back, under
 U3. Pi's back-side fan-out vias for the second flash sat where the 150 mil pads now are. They are

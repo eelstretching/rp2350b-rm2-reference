@@ -12,10 +12,12 @@ where the schematic changed underneath it:
 - PSRAM chip select moved from GPIO0 to GPIO47, so R11's GPIO0 stub comes off and a
   GPIO47 run (back layer) goes in.
 
-The RM2 sits in a new tab on the right edge, next to J3's GPIO43-46 pins, with its
-antenna end at the tab's right edge. A copper keep-out on both layers covers the
-whole antenna strip of the tab, and every RM2 ground pad gets its own via to the
-back ground plane.
+The board is stretched 18 mm at the end away from USB, like a Pico 2 W, and the RM2
+sits between the headers there with its antenna end at the new bottom edge. A rule
+area across the full board width keeps copper off both layers under the antenna, and
+every RM2 ground pad gets its own via to the back ground plane. The gSPI lines run
+down J3 on the top layer, in the gap between its pin columns and outside its GND
+column, where Pi has no copper.
 """
 import sys
 
@@ -118,17 +120,18 @@ def rect(x0, y0, x1, y1):
 
 
 # ---------------------------------------------------------------- board outline
-TAB_X, TAB_B = 148.5, 97.5          # tab right edge, tab bottom edge
+# Stretch the board 18 mm at the end away from USB; the width stays 52 mm.
+BOT = 159.5                          # new bottom edge (was 141.5)
 removed = 0
 for d in list(B.GetDrawings()):
     if d.GetLayer() != pcbnew.Edge_Cuts:
         continue
     s = (round(pcbnew.ToMM(d.GetStart().x), 3), round(pcbnew.ToMM(d.GetStart().y), 3))
     e = (round(pcbnew.ToMM(d.GetEnd().x), 3), round(pcbnew.ToMM(d.GetEnd().y), 3))
-    if {s, e} in ({(77.0, 70.0), (123.0, 70.0)}, {(123.0, 70.0), (126.0, 73.0)}, {(126.0, 73.0), (126.0, 138.5)}):
+    if max(s[1], e[1]) > 100:        # both sides and the bottom edge with its corners
         B.Delete(d)
         removed += 1
-assert removed == 3, removed
+assert removed == 5, removed
 edge_w = MM(0.1)
 
 
@@ -150,83 +153,83 @@ def arc(a, m, b):
 
 
 R2 = 0.7071067811865476
-seg((77, 70), (TAB_X - 3, 70))
-arc((TAB_X - 3, 70), (TAB_X - 3 + 3 * R2, 73 - 3 * R2), (TAB_X, 73))
-seg((TAB_X, 73), (TAB_X, TAB_B - 3))
-arc((TAB_X, TAB_B - 3), (TAB_X - 3 + 3 * R2, TAB_B - 3 + 3 * R2), (TAB_X - 3, TAB_B))
-seg((TAB_X - 3, TAB_B), (127, TAB_B))
-arc((127, TAB_B), (127 - R2, TAB_B + 1 - R2), (126, TAB_B + 1))     # inside corner fillet
-seg((126, TAB_B + 1), (126, 138.5))
+seg((74, 73), (74, BOT - 3))
+arc((74, BOT - 3), (77 - 3 * R2, BOT - 3 + 3 * R2), (77, BOT))
+seg((77, BOT), (123, BOT))
+arc((123, BOT), (123 + 3 * R2, BOT - 3 + 3 * R2), (126, BOT - 3))
+seg((126, BOT - 3), (126, 73))
 
 # ---------------------------------------------------------------- RM2 and friends
-CX, CY = 140.0, 84.0
-u5 = place('U5', CX, CY, -90)        # antenna end (pins 1/21) toward +x
+# Between the headers at the far end, antenna end (pins 1/21) toward the new bottom edge.
+# The module's top edge stays below Pi's "Minimal Design Example R4" silkscreen line.
+CX, CY = 100.0, 151.0
+u5 = place('U5', CX, CY, 180)
 ref = u5.GetField('Reference')
-ref.SetPosition(P(CX - 3, CY - 8.9))
-ref.SetTextAngleDegrees(0)
-place('R14', 135.05, 74.6, -90)      # GPIO45 -> DO, 470R
-place('R15', 127.8, 77.81, 0)        # GPIO45 -> IRQ, 10k
-place('R16', 129.8, 79.5, 180)       # WL_GPIO0 -> LED, 1k
-place('D1', 127.2, 79.5, 0)
-place('C25', 129.9, 88.5, 180)       # VDDIO 100n
-place('C24', 136.8, 92.6, 0)         # VIN 100n
-place('C23', 133.3, 95.2, 0)         # VIN 10u
+ref.SetPosition(P(CX, CY + 1.5))
+ref.SetLayer(pcbnew.F_Fab)
+place('R14', 109.3, 146.05, 180)     # GPIO45 -> DO, 470R
+place('R15', 112.0, 146.4, 90)       # GPIO45 -> IRQ, 10k
+place('R16', 104.9, 140.9, 0)        # WL_GPIO0 -> LED, 1k
+place('D1', 107.6, 140.9, 180)
+place('C25', 95.5, 140.9, 90)        # VDDIO 100n
+place('C24', 91.3, 147.4, -90)       # VIN 100n
+place('C23', 89.2, 147.5, -90)       # VIN 10u
 for r in ('R14', 'R15', 'R16', 'D1', 'C23', 'C24', 'C25'):
-    f = fp(r)
-    f.GetField('Reference').SetVisible(False)   # no room for 0402 refdes silk; Fab layer keeps them
+    fp(r).GetField('Reference').SetVisible(False)   # no room for refdes silk; Fab layer keeps them
 
 pad = {p.GetNumber(): (round(pcbnew.ToMM(p.GetPosition().x), 3), round(pcbnew.ToMM(p.GetPosition().y), 3))
        for p in u5.Pads()}
-assert pad['1'] == (142.55, 77.25) and pad['8'] == (132.25, 79.5) and pad['16'] == (135.05, 90.75), pad
+assert pad['1'] == (106.75, 153.55) and pad['9'] == (103.0, 143.25) and pad['16'] == (93.25, 146.05), pad
 
 G45, G46, G44, G43 = '/GPIO45_ADC5', '/GPIO46_ADC6', '/GPIO44_ADC4', '/GPIO43_ADC3'
-# SCLK: J3.3 -> outer gap -> over the top -> pad 3
-track(G46, F, (121.59, 76.54), (122.86, 75.27), (125.6, 75.27), (125.6, 72.0), (139.55, 72.0), pad['3'])
-# DI + DO (R14) + IRQ (R15): J3.5 -> outer gap
-track(G45, F, (121.59, 79.08), (122.86, 77.81), (126.2, 77.81), (126.2, 73.0), (136.55, 73.0), pad['5'])
-track(G45, F, (126.2, 77.81), (127.29, 77.81))                     # R15.1
-track(G45, F, (135.05, 73.0), (135.05, 74.09))                     # R14.1
-track('Net-(U5-DO)', F, (135.05, 75.11), pad['6'])
-track('Net-(U5-~{IRQ})', F, (128.31, 77.81), (129.2, 77.81))
-via('Net-(U5-~{IRQ})', 129.2, 77.81)
-track('Net-(U5-~{IRQ})', BK, (129.2, 77.81), (129.2, 82.5))        # hop under CS
-via('Net-(U5-~{IRQ})', 129.2, 82.5)
-track('Net-(U5-~{IRQ})', F, (129.2, 82.5), pad['10'])
-# CS: J3.7
-track(G44, F, (121.59, 81.62), (122.86, 80.35), (125.6, 80.35), (126.25, 81.0), pad['9'])
-# WL_ON + BT_ON: J3.9
-track(G43, F, (121.59, 84.16), (122.93, 85.5), pad['12'])
-track(G43, F, pad['12'], pad['13'])
+# Four lanes down J3, clear of all of Pi's copper: two in the gap between J3's pin columns
+# (WL_ON, CS) and two between the outer (GND) column and the board edge (DI, SCLK).
+CH_W, CH_E, ST_A, ST_B = 122.635, 123.085, 125.18, 125.52
+track(G46, F, (121.59, 76.54), (122.86, 77.81), (ST_B, 77.81), (ST_B, pad['3'][1]), pad['3'])
+track(G45, F, (121.59, 79.08), (122.86, 80.35), (ST_A, 80.35), (ST_A, pad['5'][1]), pad['5'])
+track(G44, F, (121.59, 81.62), (CH_E, 83.115), (CH_E, 141.4), (109.4, 141.4), (109.4, 139.0),
+      (103.0, 139.0), pad['9'])
+track(G43, F, (121.59, 84.16), (CH_W, 85.205), (CH_W, 140.9), (110.2, 140.9), (110.2, 138.2),
+      (98.5, 138.2), pad['12'])
+track(G43, F, pad['12'], pad['13'])                                 # BT_ON
+# DO through R14, IRQ through R15 (one short hop under CS on the back layer)
+track(G45, F, (109.81, 146.05), (109.81, 147.55))                   # R14.1
+track('Net-(U5-DO)', F, (108.79, 146.05), pad['6'])
+track(G45, F, (112.0, 146.91), (112.0, 147.55))                     # R15.1
+track('Net-(U5-~{IRQ})', F, (112.0, 145.89), (112.0, 144.8))
+via('Net-(U5-~{IRQ})', 112.0, 144.8)
+track('Net-(U5-~{IRQ})', BK, (112.0, 144.8), (108.2, 141.0), (101.5, 141.0))
+via('Net-(U5-~{IRQ})', 101.5, 141.0)
+track('Net-(U5-~{IRQ})', F, (101.5, 141.0), pad['10'])
 # LED: pad 8 -> R16 -> D1 -> GND
-track('Net-(U5-GPIO0)', F, (130.31, 79.5), pad['8'])
-track('Net-(D1-A)', F, (127.99, 79.5), (129.29, 79.5))
-track('GND', F, (125.6, 78.8), (126.3, 79.5), (126.41, 79.5))
-via('GND', 125.6, 78.8)
+track('Net-(U5-GPIO0)', F, (104.39, 140.9), (104.39, 143.25))
+track('Net-(D1-A)', F, (105.41, 140.9), (106.81, 140.9))
+track('GND', F, (108.39, 140.9), (108.4, 139.95))
+via('GND', 108.4, 139.95)
 
-# 3V3: VDDIO, VIN and their decoupling, fed from the +3V3 copper beside J3
-track('+3V3', F, pad['14'], (130.38, 88.5), w=0.4)
-track('+3V3', F, (130.9, 88.5), (130.9, 93.6), (135.05, 93.6), (135.05, 92.6), w=0.4)
-track('+3V3', F, pad['16'], (135.05, 92.6), (136.32, 92.6), w=0.4)
-track('+3V3', F, (132.35, 93.6), (132.35, 95.2), w=0.4)
-track('+3V3', F, (130.9, 93.6), (126.5, 93.6), (125.95, 93.05), (125.3, 93.05), w=0.4)
-# capacitor grounds
-for (x, y), (vx, vy) in (((129.42, 88.5), (128.6, 88.5)), ((137.28, 92.6), (138.2, 92.6)),
-                         ((134.25, 95.2), (135.4, 95.2))):
+# 3V3: VDDIO and VIN with their decoupling; the top-layer +3V3 pour joins them to Pi's
+track('+3V3', F, (95.5, 141.38), pad['14'], w=0.4)                  # C25.1
+track('+3V3', F, pad['16'], (89.2, 146.05), (89.2, 146.55), w=0.4)  # VIN -> C24, C23
+track('+3V3', F, (91.3, 146.05), (91.3, 146.92), w=0.4)
+for (x, y), (vx, vy) in (((95.5, 140.42), (95.5, 139.5)), ((91.3, 147.88), (91.3, 148.9)),
+                         ((89.2, 148.45), (89.2, 149.7))):
     track('GND', F, (x, y), (vx, vy), w=0.3)
     via('GND', vx, vy)
 
 # a short via to the back ground plane at every RM2 ground pad
-for n, v in (('1', (142.55, 75.4)), ('4', (138.05, 75.4)), ('7', (133.55, 75.4)),
-             ('11', (130.4, 84.0)), ('15', (133.55, 92.45)), ('21', (142.55, 92.6))):
+for n, v in (('11', (100.0, 140.9)), ('7', (108.6, 144.55)), ('4', (108.6, 149.05)),
+             ('1', (108.6, 153.55)), ('15', (91.4, 144.55)), ('21', (91.4, 153.55))):
     track('GND', F, pad[n], v, w=0.3)
     via('GND', *v)
 
-# zones: back ground plane into the tab, ground under the module on top, +3V3 elsewhere on top
-zone_like('GND', BK, BK, 'GND', rect(125.0, 69.9, TAB_X + 0.1, TAB_B + 0.1), 11, 'RM2 tab GND')
-zone_like('+3V3', F, F, '+3V3', rect(125.0, 69.9, TAB_X + 0.1, TAB_B + 0.1), 10, 'RM2 tab 3V3')
-zone_like('GND', BK, F, 'GND', rect(131.3, 76.3, 143.3, 91.7), 20, 'RM2 GND under module', solid=True)
+# zones for the stretched end: back GND plane, +3V3 on top, GND on top under the module
+ANT = CY + 3.3                       # module's antenna line
+zone_like('GND', BK, BK, 'GND', rect(73.5, 140.0, 126.5, BOT + 0.5), 11, 'RM2 end GND')
+zone_like('+3V3', F, F, '+3V3', rect(73.5, 140.0, 126.5, BOT + 0.5), 10, 'RM2 end 3V3')
+zone_like('GND', BK, F, 'GND', rect(92.3, 142.3, 107.7, ANT), 20, 'RM2 GND under module', solid=True)
 
-# antenna strip: no copper on any layer from the module's antenna end to the board edge
+# antenna strip: no copper on any layer from the module's antenna line to the board edge,
+# across the full board width
 ka = pcbnew.ZONE(B)
 ka.SetIsRuleArea(True)
 ka.SetLayerSet(pcbnew.LSET.AllCuMask())
@@ -237,7 +240,7 @@ ka.SetDoNotAllowZoneFills(True)
 ka.SetDoNotAllowFootprints(False)
 ka.SetZoneName('RM2 antenna strip: no copper')
 ka.Outline().NewOutline()
-for x, y in rect(CX + 3.3, 69.5, TAB_X + 0.5, TAB_B + 0.5):
+for x, y in rect(73.5, ANT, 126.5, BOT + 0.5):
     ka.Outline().Append(MM(x), MM(y))
 B.Add(ka)
 
